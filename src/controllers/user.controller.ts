@@ -271,9 +271,9 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response): Promi
 const logoutUser = expressAsyncHandler(async (req: Request, res: Response): Promise<void> => {
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 0, // Clear cookie
-    secure: process.env.NODE_ENV === "production",
+    secure: true
   };
 
   res.clearCookie("accessToken", cookieOptions);

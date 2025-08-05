@@ -21,9 +21,9 @@ const generateToken = (user, res) => {
         // Set the token as a secure cookie
         res.cookie('accessToken', token, {
             httpOnly: true, // Prevent JavaScript access
-            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            secure: true, // Use secure cookies in production
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-            sameSite: 'strict', // CSRF protection
+            sameSite: 'none', // CSRF protection
         });
         return token;
     }
