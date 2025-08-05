@@ -72,9 +72,21 @@ const registerUser = expressAsyncHandler(async (req: Request, res: Response): Pr
   }
 
   await user.save();
-  generateToken(user, res);
-  
-  res.status(HttpStatusCodes.CREATED).json({ user });
+
+  // Exclude password from the user object that will be sent in the response
+  const userResponse = user.toObject();
+  delete userResponse.password;
+
+  const token = generateToken(user);
+
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  res.status(HttpStatusCodes.CREATED).json({ user: userResponse });
   await sendEmail(user?.email,'https://mybank-tbl5.onrender.com', 'Enock UWUMUKIZA');
 });
 
@@ -177,11 +189,20 @@ const updateUserProfile = expressAsyncHandler(async (req: Request, res: Response
 
   await user.save();
 
-  
-  generateToken(user, res); 
+  const token = generateToken(user);
 
-  
-  res.json({ user });
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  // Exclude password from the user object that will be sent in the response
+  const userResponse = user.toObject();
+  delete userResponse.password;
+
+  res.json({ user: userResponse });
 });
 
 
@@ -233,7 +254,18 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response): Promi
   }
 
 
-  generateToken(user, res);
+  const token = generateToken(user);
+
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  // Exclude password from the user object that will be sent in the response
+  const userResponse = user.toObject();
+  delete userResponse.password;
 
   const userId = user?._id;
 
@@ -262,7 +294,7 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response): Promi
   }
   
   
-  res.json({ user });
+  res.json({ user: userResponse });
   
   
 });

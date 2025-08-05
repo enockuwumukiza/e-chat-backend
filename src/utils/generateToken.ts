@@ -1,18 +1,17 @@
 import jwt from 'jsonwebtoken';
-import { Response } from 'express';
 import dotenv from 'dotenv';
 import { IUser } from '../models/user.model';
-import { JwtPayload } from 'jsonwebtoken';
+
 dotenv.config();
 
-export const generateToken = (user: IUser, res: Response):string=> {
+export const generateToken = (user: IUser): string => {
     try {
         // Generate the JWT token
         const token = jwt.sign(
             {
                 _id: user._id,
                 name: user.name,
-                email:user.email
+                email: user.email,
             },
             process.env.JWT_SECRET as string,
             {
@@ -20,14 +19,6 @@ export const generateToken = (user: IUser, res: Response):string=> {
                 algorithm: 'HS256', // Strong HMAC algorithm
             }
         );
-
-        // Set the token as a secure cookie
-        res.cookie('accessToken', token, {
-            httpOnly: true, // Prevent JavaScript access
-            secure: true, // Use secure cookies in production
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-            sameSite: 'none', // CSRF protection
-        });
 
         return token;
     } catch (error) {
