@@ -18,7 +18,6 @@ dotenv.config();
 //built-in middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname,'..','..', 'frontend', 'eChat', 'dist')));
 
 //custom middlewares
 
@@ -31,11 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/messages', messageRoutes);
 
-app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'eChat', 'dist')));
 
-app.get('*',(req:Request, res:Response) =>{
-     res.sendFile(path.join(__dirname, '..','..','frontend', 'eChat', 'dist', 'index.html'));
-})
 
 export {
     app, PORT, server
