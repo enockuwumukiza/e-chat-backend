@@ -13,7 +13,7 @@ const server = http_1.default.createServer(app);
 exports.server = server;
 exports.io = new socket_io_1.Server(server, {
     cors: {
-        origin: ["https://echat-fieq.onrender.com", "http://localhost:3000",],
+        origin: ["https://e-chat-seven.vercel.app", "http://localhost:3000",],
         methods: ["GET", "POST", "DELETE", "PUT"],
         optionsSuccessStatus: 200,
     },
