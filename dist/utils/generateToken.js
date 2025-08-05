@@ -7,23 +7,16 @@ exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const generateToken = (user, res) => {
+const generateToken = (user) => {
     try {
         // Generate the JWT token
         const token = jsonwebtoken_1.default.sign({
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
         }, process.env.JWT_SECRET, {
             expiresIn: '7d', // Token validity
             algorithm: 'HS256', // Strong HMAC algorithm
-        });
-        // Set the token as a secure cookie
-        res.cookie('accessToken', token, {
-            httpOnly: true, // Prevent JavaScript access
-            secure: true, // Use secure cookies in production
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-            sameSite: 'none', // CSRF protection
         });
         return token;
     }

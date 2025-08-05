@@ -74,8 +74,17 @@ const registerUser = (0, express_async_handler_1.default)((req, res) => __awaite
         }
     }
     yield user.save();
-    (0, generateToken_1.generateToken)(user, res);
-    res.status(httpStatusCodes_1.HttpStatusCodes.CREATED).json({ user });
+    // Exclude password from the user object that will be sent in the response
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    const token = (0, generateToken_1.generateToken)(user);
+    res.cookie('accessToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    res.status(httpStatusCodes_1.HttpStatusCodes.CREATED).json({ user: userResponse });
     yield (0, sendMail_1.sendEmail)(user === null || user === void 0 ? void 0 : user.email, 'https://mybank-tbl5.onrender.com', 'Enock UWUMUKIZA');
 }));
 exports.registerUser = registerUser;
@@ -165,8 +174,17 @@ const updateUserProfile = (0, express_async_handler_1.default)((req, res) => __a
         }
     }
     yield user.save();
-    (0, generateToken_1.generateToken)(user, res);
-    res.json({ user });
+    const token = (0, generateToken_1.generateToken)(user);
+    res.cookie('accessToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    // Exclude password from the user object that will be sent in the response
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    res.json({ user: userResponse });
 }));
 exports.updateUserProfile = updateUserProfile;
 const getUserById = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -209,7 +227,16 @@ const loginUser = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         res.status(httpStatusCodes_1.HttpStatusCodes.UNAUTHORIZED).json({ message: "Invalid credentials" });
         return;
     }
-    (0, generateToken_1.generateToken)(user, res);
+    const token = (0, generateToken_1.generateToken)(user);
+    res.cookie('accessToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    // Exclude password from the user object that will be sent in the response
+    const userResponse = user.toObject();
+    delete userResponse.password;
     const userId = user === null || user === void 0 ? void 0 : user._id;
     if (!userId) {
         res.status(httpStatusCodes_1.HttpStatusCodes.UNAUTHORIZED).json({
@@ -230,7 +257,7 @@ const loginUser = (0, express_async_handler_1.default)((req, res) => __awaiter(v
             });
         }
     }
-    res.json({ user });
+    res.json({ user: userResponse });
 }));
 exports.loginUser = loginUser;
 // Logout user

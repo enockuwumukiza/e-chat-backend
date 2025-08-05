@@ -75,7 +75,7 @@ const registerUser = expressAsyncHandler(async (req: Request, res: Response): Pr
 
   // Exclude password from the user object that will be sent in the response
   const userResponse = user.toObject();
-  delete userResponse.password;
+  delete (userResponse as any).password;
 
   const token = generateToken(user);
 
@@ -200,7 +200,7 @@ const updateUserProfile = expressAsyncHandler(async (req: Request, res: Response
 
   // Exclude password from the user object that will be sent in the response
   const userResponse = user.toObject();
-  delete userResponse.password;
+  delete (userResponse as any).password;
 
   res.json({ user: userResponse });
 });
@@ -265,7 +265,7 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response): Promi
 
   // Exclude password from the user object that will be sent in the response
   const userResponse = user.toObject();
-  delete userResponse.password;
+  delete (userResponse as any).password;
 
   const userId = user?._id;
 
